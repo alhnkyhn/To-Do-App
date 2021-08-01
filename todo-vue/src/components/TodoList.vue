@@ -1,14 +1,12 @@
 <template>
   <div>
+    Merhabalar
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+  name: 'todo-list'
 }
 </script>
 
