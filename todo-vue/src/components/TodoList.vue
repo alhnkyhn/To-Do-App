@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="text" placeholder="Ne yapılması gerekiyor?" class="input-todo" v-model="newTodo" @keyup.enter="addTodo">
-    <div v-for="(todo, index) in todos" :key="todo.id" class="item-todo">
+    <div v-for="(todo, index) in todosFiltered" :key="todo.id" class="item-todo">
       <div class="todo-item-left">
         <input type="checkbox" v-model="todo.completed">
           <div v-if="!todo.editingMode" class="todo-item-label" @dblclick="changeMode(index, todo.title)" :class="{ completed: todo.completed}">
@@ -26,6 +26,20 @@
       {{ remaining }} yapılacak madde kaldı
     </div>
   </div>
+
+    <div class="extra-container">
+        <div>
+            <button :class="{active: filter == 'all'}" @click="filter = 'all' " >
+                Tümü
+            </button>
+            <button :class="{active: filter == 'active'}" @click="filter = 'active' " >
+                Aktif
+            </button>
+            <button :class="{active: filter == 'completed'}" @click="filter = 'completed'" >
+                Tamamlanmış
+            </button>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -41,18 +55,21 @@ export default {
             'title': 'Starbucks için hazırlan',
             'completed': false,
             'editingMode': false,
+
           },
           {
             'id': 2,
             'title': 'Motoru al',
             'completed': false,
-            'editingMode': false
+            'editingMode': false,
+
           },
         ],
         editCache :'',
+        filter: "all",
 
       }
-  },
+  }, 
   directives: {
     focus: {
       inserted: function (el) {
@@ -66,6 +83,15 @@ export default {
     },
     anyRemaining(){
       return this.remaining != 0
+    },
+    todosFiltered(){
+        if(this.filter == 'all'){
+            return this.todos;
+        }else if(this.filter == 'active'){
+            return this.todos.filter(todo => !todo.completed)
+        }else if(this.filter == 'completed'){
+            return this.todos.filter(todo => todo.completed)
+        }
     }
   },
   methods:{
@@ -77,7 +103,7 @@ export default {
         this.todos.push({
           id: this.idForTodo,
           title: this.newTodo,
-          completed: false
+          completed: false,
         })
 
         this.idForTodo ++;
